@@ -26,7 +26,17 @@ Stl and step files that are included are all 4mm tall and have varying thickness
 
 Note about Enders and other budget printers: the movement on the x-axis is non-linear, [see here](https://klipper.discourse.group/t/correct-dimensional-accuracy/6093/5) for discussion on the matter. Calistar works on the principle that movement in each axis is linear, and therefore cannot be used to calibrate the dimensional accuracy of such printers. However, it _can_ be used to calculate and fix your printer's skew.
 
-# Brower-based calibration worksheet
+# Simple calibration worksheet (recommended)
+
+Open `worksheet/index.html` in any browser. It is a single page with no build step and no internet needed. You pick the model you printed, type your measurements (click a box to see where the calipers go), and it tells you, in plain words:
+
+- **Skew**: a machine setting you fix once, with the `SET_SKEW` / `M852` command ready to copy. It can iterate on a correction that is already loaded.
+- **Size**: per filament. It tells you whether the error is normal shrinkage for that material (fix it in the slicer) or a mechanical error (fix it in the firmware), with the exact value in your slicer's own convention (Orca/Bambu/SuperSlicer, PrusaSlicer, Cura, or plain scaling).
+- **Wall offset**: over- or under-extrusion. It is fitted separately so it no longer gets mixed into the size result.
+
+Sessions (one per filament, for example) are kept in the browser and can be exported and imported as JSON. The page is available in English and Spanish. The maths is in `worksheet/calistar-core.js` and is tested with `node --test worksheet/test/core.test.js`.
+
+# Brower-based calibration worksheet (legacy)
 
 The web-based calibration worksheet is Markdown that has been written to be compiled with [Material for Mkdocs](https://squidfunk.github.io/mkdocs-material/). A compiled version is available on [Printables](https://www.printables.com/model/778188-calistar-parametric-open-source-alternative-to-cal), simply unzip `calistar_browser.zip` and open `index.html` in a web browser. 
 

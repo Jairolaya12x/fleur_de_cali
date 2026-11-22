@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calistar worksheet</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <h1>Calistar</h1>
+    <p data-i18n="tagline"></p>
+  </div>
+  <div class="toolbar">
+    <label class="inline"><span data-i18n="session"></span>
+      <select id="session"></select>
+    </label>
+    <button type="button" id="sessionNew" data-i18n="sessionNew"></button>
+    <button type="button" id="sessionDelete" data-i18n="sessionDelete"></button>
+    <button type="button" id="exportBtn" data-i18n="export"></button>
+    <button type="button" id="importBtn" data-i18n="import"></button>
+    <input type="file" id="importFile" accept="application/json,.json" hidden>
+    <button type="button" id="langBtn" aria-label="Language"></button>
+    <button type="button" id="themeBtn" data-i18n="theme"></button>
+  </div>
+</header>
+
+<main>
+
+<section id="setup">
+  <h2><span class="num">1</span><span data-i18n="setupTitle"></span></h2>
+  <div class="fields">
+    <label><span data-i18n="model"></span>
+      <select id="model"></select>
+      <small data-i18n="modelHint"></small>
+    </label>
+    <label class="custom"><span data-i18n="width"></span>
+      <input id="width" type="text" inputmode="decimal">
+    </label>
+    <label class="custom"><span data-i18n="points"></span>
+      <select id="points"><option>2</option><option>3</option><option>4</option><option>5</option></select>
+    </label>
+    <label><span data-i18n="material"></span>
+      <select id="material"></select>
+      <small id="materialHint"></small>
+    </label>
+    <label><span data-i18n="firmware"></span>
+      <select id="firmware"><option value="klipper">Klipper</option><option value="marlin">Marlin</option></select>
+    </label>
+    <label><span data-i18n="kinematics"></span>
+      <select id="kinematics">
+        <option value="corexy" data-i18n="corexy"></option>
+        <option value="cartesian" data-i18n="cartesian"></option>
+      </select>
+    </label>
+  </div>
+  <details class="advanced">
+    <summary data-i18n="advanced"></summary>
+    <div class="fields">
+      <label><span data-i18n="caliper"></span>
+        <input id="caliper" type="text" inputmode="decimal">
+        <small data-i18n="caliperHint"></small>
+      </label>
+      <label><span data-i18n="printScale"></span>
+        <input id="printScale" type="text" inputmode="decimal">
+        <small data-i18n="printScaleHint"></small>
+      </label>
+      <label><span data-i18n="tolerance"></span>
+        <input id="tolerance" type="text" inputmode="decimal">
+        <small data-i18n="toleranceHint"></small>
+      </label>
+    </div>
+  </details>
+</section>
+
+<section id="measure">
+  <h2><span class="num">2</span><span data-i18n="measureTitle"></span></h2>
+  <p class="lead" data-i18n="measureLead"></p>
+  <div class="measure">
+    <figure class="diagram">
+      <div id="diagram"></div>
+      <figcaption id="diagramCaption"></figcaption>
+      <ul class="legend">
+        <li><i class="sw outer"></i><span data-i18n="legendOuter"></span></li>
+        <li><i class="sw inner"></i><span data-i18n="legendInner"></span></li>
+      </ul>
+    </figure>
+    <div>
+      <div id="groups"></div>
+      <div id="measureNotes" class="notes"></div>
+      <p class="rowtools"><button type="button" id="clearBtn" data-i18n="clear"></button></p>
+    </div>
+  </div>
+</section>
+
+<section id="results">
+  <h2><span class="num">3</span><span data-i18n="resultsTitle"></span></h2>
+  <p class="lead" id="resultsLead"></p>
+  <div id="cards" class="cards"></div>
+</section>
+
+<section id="actions">
+  <h2><span class="num">4</span><span data-i18n="actionsTitle"></span></h2>
+  <p class="lead" data-i18n="actionsLead"></p>
+
+  <article class="step" id="stepSkew">
+    <h3 data-i18n="stepSkewTitle"></h3>
+    <p id="stepSkewText"></p>
+    <div id="skewFix">
+      <div data-fw="klipper">
+        <details>
+          <summary data-i18n="skewIterate"></summary>
+          <p data-i18n="skewIterateHint"></p>
+          <div class="fields three">
+            <label>AC <input id="oldAC" type="text" inputmode="decimal" placeholder="—"></label>
+            <label>BD <input id="oldBD" type="text" inputmode="decimal" placeholder="—"></label>
+            <label>AD <input id="oldAD" type="text" inputmode="decimal" placeholder="—"></label>
+          </div>
+          <p id="skewIterateOut" class="muted"></p>
+        </details>
+        <p data-i18n="klipperSkewHow"></p>
+        <pre class="code" id="klipperSkewCode"></pre>
+        <p data-i18n="klipperSkewLoad"></p>
+        <pre class="code">SKEW_PROFILE LOAD=calistar</pre>
+      </div>
+      <div data-fw="marlin">
+        <p data-i18n="marlinSkewHow"></p>
+        <pre class="code" id="marlinSkewCode"></pre>
+      </div>
+    </div>
+  </article>
+
+  <article class="step" id="stepSize">
+    <h3 data-i18n="stepSizeTitle"></h3>
+    <p id="stepSizeText"></p>
+    <p id="stepSizeDiffer" class="callout"></p>
+    <div id="sizeFix">
+      <p class="callout" data-i18n="oneNotBoth"></p>
+
+      <div class="option" id="optSlicer">
+        <h4><span data-i18n="optSlicer"></span> <span class="tag" id="tagSlicer" data-i18n="recommended"></span></h4>
+        <div class="fields">
+          <label><span data-i18n="slicer"></span>
+            <select id="slicer">
+              <option value="orca">OrcaSlicer / BambuStudio / SuperSlicer</option>
+              <option value="prusa">PrusaSlicer</option>
+              <option value="cura">Cura</option>
+              <option value="scale" data-i18n="slicerOther"></option>
+            </select>
+          </label>
+          <label><span data-i18n="currentValue"></span>
+            <input id="curShrink" type="text" inputmode="decimal">
+            <small id="curShrinkHint"></small>
+          </label>
+        </div>
+        <p class="answer"><span id="shrinkLabel"></span> <output id="shrinkOut"></output></p>
+        <p class="muted" id="shrinkWhere"></p>
+      </div>
+
+      <div class="option" id="optFirmware">
+        <h4><span data-i18n="optFirmware"></span> <span class="tag" id="tagFirmware" data-i18n="recommended"></span></h4>
+        <p class="muted" data-i18n="firmwareWarn"></p>
+        <div data-fw="klipper">
+          <div class="fields">
+            <label><span>[stepper_x] rotation_distance</span><input id="rotX" type="text" inputmode="decimal" placeholder="40"></label>
+            <label><span>[stepper_y] rotation_distance</span><input id="rotY" type="text" inputmode="decimal" placeholder="40"></label>
+          </div>
+          <pre class="code" id="klipperRotCode"></pre>
+        </div>
+        <div data-fw="marlin">
+          <div class="fields">
+            <label><span data-i18n="stepsX"></span><input id="stepsX" type="text" inputmode="decimal" placeholder="80"></label>
+            <label><span data-i18n="stepsY"></span><input id="stepsY" type="text" inputmode="decimal" placeholder="80"></label>
+          </div>
+          <pre class="code" id="marlinStepsCode"></pre>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <article class="step" id="stepFlow">
+    <h3 data-i18n="stepFlowTitle"></h3>
+    <p id="stepFlowText"></p>
+  </article>
+
+  <article class="step">
+    <h3 data-i18n="stepAgainTitle"></h3>
+    <p data-i18n="stepAgainText"></p>
+  </article>
+</section>
+
+</main>
+
+<footer>
+  <p><span data-i18n="footer"></span>
+    <a href="https://github.com/dirtdigger/fleur_de_cali">GitHub</a> ·
+    <a href="https://github.com/dirtdigger/fleur_de_cali/wiki/Measuring" data-i18n="wikiMeasuring"></a></p>
+</footer>
+
+<script src="calistar-core.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
